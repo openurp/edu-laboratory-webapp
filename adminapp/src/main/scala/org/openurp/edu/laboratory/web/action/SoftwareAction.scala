@@ -8,6 +8,8 @@ import org.beangle.data.dao.OqlBuilder
 import org.openurp.base.model.Building
 import org.openurp.edu.base.model.Classroom
 import org.beangle.webmvc.api.view.View
+import org.beangle.commons.lang.Numbers
+import org.beangle.commons.lang.Strings
 
 class SoftwareAction extends RestfulAction[Software] {
 
@@ -25,8 +27,17 @@ class SoftwareAction extends RestfulAction[Software] {
   }
 
   override protected def saveAndRedirect(entity: Software): View = {
+    val software = entity.asInstanceOf[Software]
+    if (!software.persisted) {
+      software.beginOn = new java.sql.Date(System.currentTimeMillis())
+    }
+    val oses = getAll("fake.oses", classOf[Int])
+    val rooms = getAll("fake.guaPai", classOf[Long])
+    software.oses.clear()
+    software.oses ++= entityDao.find(classOf[Operation], oses)
+    software.classrooms.clear()
+    software.classrooms ++= entityDao.find(classOf[Classroom], rooms)
     super.saveAndRedirect(entity)
-
   }
 
 }

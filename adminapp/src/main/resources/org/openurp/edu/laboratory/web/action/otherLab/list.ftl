@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=labs var="lab"]
+  [@b.gridbar]
+    bar.addItem("${b.text("action.new")}",action.add());
+    bar.addItem("${b.text("action.modify")}",action.edit());
+  [/@]
+  [@b.row]
+    [@b.boxcol /]
+    [@b.col width="20%" property="name" title="名称"/]
+    [@b.col width="15%" property="audience" title="听课对象"]${lab.audience!}[/@]
+    [@b.col width="10%" property="stdCount" title="人数"]${lab.stdCount!}[/@]
+    [@b.col title="操作" width="30%"]
+        [@b.a href="!addApply?lab.id=${lab.id}"]添加征询表[/@]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

@@ -10,11 +10,16 @@
     [@b.boxcol /]
     [@b.col width="10%" property="code" title="代码"]${software.code}[/@]
     [@b.col width="15%" property="name" title="名称"][@b.a href="!info?id=${software.id}"]${software.name}[/@][/@]
-    [@b.col width="10%" property="os" title="操作系统"]${software.os.name!}[/@]
+     [@b.col width="15%" property="oses" title="操作系统"]
+       [#list software.oses as os]
+         ${(os.name)!}
+        [#if os_has_next],[/#if]
+       [/#list]
+    [/@]
     [@b.col width="10%" property="version" title="版本"]${software.version!}[/@]
     [@b.col width="15%" property="classrooms" title="所属实验室"]
        [#list software.classrooms as classroom]
-         ${classroom.name}
+         ${(classroom.name)!}
         [#if classroom_has_next],[/#if]
        [/#list]
     [/@]

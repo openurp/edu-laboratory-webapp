@@ -9,17 +9,11 @@ import org.openurp.edu.lesson.model.Lesson
 import org.beangle.commons.lang.time.WeekTime
 
 class LabApply extends LongId with Updated {
-  var lesson: Lesson = _
-  var name: String = _
-  var temp: Boolean = false
-  var audience: String = _
-  var count: Int = _
-  var teacher: Teacher = _
-  var tel: String = _
-  var labPeriod: String = _
-  var itemCount: Int = _
-  var labItems = Collections.newBuffer[LabItem]
+
+  var lab: Lab = _
   var labBuilding: Building = _
   var softwares = Collections.newBuffer[Software]
+  var weekTime: WeekTime = _
+  var state: Boolean = false
 
 }

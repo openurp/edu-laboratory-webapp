@@ -26,23 +26,30 @@ import org.beangle.data.model.bind.Mapping
 class DefaultMapping extends Mapping {
 
   def binding(): Unit = {
-    defaultIdGenerator("date")
+    defaultIdGenerator("auto_increment")
 
     bind[Software] on (e => declare(
       e.classrooms is ordered,
       e.oses is ordered))
 
+    bind[LabType] on (e => declare(
+      e.name & e.id is notnull))
+
     bind[Operation] on (e => declare(
       e.name is notnull))
 
-    bind[LabItem] on (e => declare(
-      e.content is notnull))
+    bind[LabItem]
+
+    bind[Lab] on (e => declare(
+      e.name & e.stdCount & e.teacher & e.itemCount are notnull,
+      e.labApplies is depends("lab"),
+      e.labItems is depends("lab")))
 
     bind[LabApply] on (e => declare(
-      e.name & e.temp & e.audience & e.count & e.teacher & e.labBuilding are notnull,
+      e.lab & e.labBuilding are notnull,
       e.softwares is ordered))
-
-    bind[LabTime] on (e => declare(
-      e.labApply & e.weekTime are notnull))
+    //
+    //    bind[LabTime] on (e => declare(
+    //      e.labApply & e.weekTime are notnull))
   }
 }
