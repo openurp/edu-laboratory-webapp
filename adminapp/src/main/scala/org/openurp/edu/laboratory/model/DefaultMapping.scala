@@ -39,6 +39,8 @@ class DefaultMapping extends Mapping {
       e.name is notnull))
 
     bind[LabItem]
+    bind[MediaApply] on (e => declare(
+      e.lesson & e.software are notnull))
 
     bind[Lab] on (e => declare(
       e.name & e.stdCount & e.teacher & e.itemCount are notnull,

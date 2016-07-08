@@ -6,6 +6,7 @@ import org.openurp.edu.laboratory.web.action.ManageAction
 import org.openurp.edu.laboratory.web.action.ApplyAction
 import org.openurp.edu.laboratory.web.action.LessonLabAction
 import org.openurp.edu.laboratory.web.action.OtherLabAction
+import org.openurp.edu.laboratory.web.action.MediaApplyAction
 
 class DefaultModule extends AbstractBindModule {
 
@@ -15,5 +16,6 @@ class DefaultModule extends AbstractBindModule {
     bind(classOf[ManageAction])
     bind(classOf[LessonLabAction])
     bind(classOf[OtherLabAction])
+    bind(classOf[MediaApplyAction])
   }
 }
