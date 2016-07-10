@@ -11,6 +11,7 @@ import org.openurp.edu.base.model.Teacher;
 import org.openurp.edu.eams.web.AbstractTeacherLessonAction;
 import org.openurp.edu.laboratory.model.ExprProgram;
 import org.openurp.edu.laboratory.model.ExprTest;
+import org.openurp.edu.laboratory.model.LabRoomApply;
 import org.openurp.edu.laboratory.model.Software;
 import org.openurp.edu.lesson.model.Lesson;
 
@@ -115,6 +116,7 @@ public class ProgramAction extends AbstractTeacherLessonAction {
     List<Lesson> lessonList = entityDao.search(builder);
 
     Map<Lesson, ExprProgram> programMap = CollectUtils.newHashMap();
+    Map<Lesson, LabRoomApply> applyMap = CollectUtils.newHashMap();
     if (!lessonList.isEmpty()) {
       OqlBuilder<ExprProgram> pbuilder = OqlBuilder.from(ExprProgram.class, "ep");
       pbuilder.where("ep.lesson in(:lessons)", lessonList);
@@ -122,9 +124,17 @@ public class ProgramAction extends AbstractTeacherLessonAction {
       for (ExprProgram p : programs) {
         programMap.put(p.getLesson(), p);
       }
+      
+      OqlBuilder<LabRoomApply> abuilder = OqlBuilder.from(LabRoomApply.class, "a");
+      abuilder.where("a.lesson in(:lessons)", lessonList);
+      List<LabRoomApply> applies = entityDao.search(abuilder);
+      for (LabRoomApply p : applies) {
+        applyMap.put(p.getLesson(), p);
+      }
     }
     put("lessonList", lessonList);
     put("programMap", programMap);
+    put("applyMap", applyMap);
     return forward();
   }
 }

@@ -2,7 +2,7 @@ package org.openurp.edu.laboratory.model;
 
 import java.util.List;
 
-import javax.persistence.Embedded;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,43 +21,43 @@ import org.openurp.edu.base.model.AuditState;
 import org.openurp.edu.base.model.Project;
 import org.openurp.edu.lesson.model.Lesson;
 
-@Entity(name="org.openurp.edu.laboratory.model.LabRoomApply")
-public class LabRoomApply  extends LongIdObject {
+@Entity(name = "org.openurp.edu.laboratory.model.LabRoomApply")
+public class LabRoomApply extends LongIdObject {
 
   private static final long serialVersionUID = -3018564276085266559L;
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Project project;
-  
+
   @ManyToOne(fetch = FetchType.LAZY)
   private Semester semester;
-  
+
   @ManyToOne(fetch = FetchType.LAZY)
   private User borrower;
-  
+
   @Size(max = 15)
   private String tel;
-  
+
   @ManyToOne(fetch = FetchType.LAZY)
   private Lesson lesson;
-  
+
   @Size(max = 100)
   private String activity;
-  
+
   private int attendance;
-  
-  @Size(max = 50)
+
+  @Size(max = 500)
   private String audience;
-  
+
   @ManyToMany
-  private List<Software> softwares  = CollectUtils.newArrayList();
-  
-  @Embedded
-  private WeekTime time;
-  
+  private List<Software> softwares = CollectUtils.newArrayList();
+
+  @ElementCollection(targetClass = WeekTime.class)
+  private List<WeekTime> times = CollectUtils.newArrayList();
+
   @NotNull
   private java.util.Date updatedAt;
-  
+
   @NotNull
   @Enumerated(value = EnumType.ORDINAL)
   private AuditState state;
@@ -134,12 +134,12 @@ public class LabRoomApply  extends LongIdObject {
     this.softwares = softwares;
   }
 
-  public WeekTime getTime() {
-    return time;
+  public List<WeekTime> getTimes() {
+    return times;
   }
 
-  public void setTime(WeekTime time) {
-    this.time = time;
+  public void setTimes(List<WeekTime> times) {
+    this.times = times;
   }
 
   public java.util.Date getUpdatedAt() {
@@ -157,5 +157,5 @@ public class LabRoomApply  extends LongIdObject {
   public void setState(AuditState state) {
     this.state = state;
   }
-  
+
 }
