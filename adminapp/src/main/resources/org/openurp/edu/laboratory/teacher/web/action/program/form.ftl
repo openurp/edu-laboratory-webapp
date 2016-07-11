@@ -10,8 +10,8 @@
    [#if !program.persisted && sameCoursePrograms?size>0]
      [@b.select label="拷贝自" name="copyProgram.id" onchange="copyFrom(this.value)" items=sameCoursePrograms empty="..." option=r"${item.lesson.no} ${item.lesson.course.name}"/]
    [/#if]
-   [@b.textfield label="实验项目数"  required="true" name="program.itemCount" value=program.itemCount onchange="increseTest(this.value)" check="greaterThanOrEqualTo(1)"/]
    [@b.textfield label="实验学时" required="true" name="program.period" value=program.period check="greaterThanOrEqualTo(1)"/]
+   [@b.textfield label="实验项目数" required="true" name="program.itemCount" value=program.itemCount onchange="increseTest(this.value)" check="greaterThanOrEqualTo(1)"/]
    [@b.field label='使用软件']
 	 <select id="software_select" multiple="true" name="software.id" style="width:600px;">
 	 [#list softwares as software]
