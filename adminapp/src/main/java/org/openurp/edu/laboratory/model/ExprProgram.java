@@ -40,10 +40,6 @@ public class ExprProgram extends LongIdObject {
   @Cascade(CascadeType.ALL)
   private List<ExprTest> tests = CollectUtils.newArrayList();
 
-  @OneToMany(mappedBy = "program", orphanRemoval = true)
-  @Cascade(CascadeType.ALL)
-  private List<ExprActivity> activities = CollectUtils.newArrayList();
-
   private java.util.Date updatedAt;
 
   public Project getProject() {
@@ -92,14 +88,6 @@ public class ExprProgram extends LongIdObject {
 
   public void setTests(List<ExprTest> tests) {
     this.tests = tests;
-  }
-
-  public List<ExprActivity> getActivities() {
-    return activities;
-  }
-
-  public void setActivities(List<ExprActivity> activities) {
-    this.activities = activities;
   }
 
   public java.util.Date getUpdatedAt() {

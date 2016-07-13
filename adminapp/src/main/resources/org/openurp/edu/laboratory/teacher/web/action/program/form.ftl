@@ -12,7 +12,7 @@
    [/#if]
    [@b.textfield label="实验学时" required="true" name="program.period" value=program.period check="greaterThanOrEqualTo(1)"/]
    [@b.textfield label="实验项目数" required="true" name="program.itemCount" value=program.itemCount onchange="increseTest(this.value)" check="greaterThanOrEqualTo(1)"/]
-   [@b.field label='使用软件']
+   [@b.field label='使用软件' required="true"]
 	 <select id="software_select" multiple="true" name="software.id" style="width:600px;">
 	 [#list softwares as software]
 	   <option value='${software.id}' [#if program.softwares?seq_contains(software)]selected[/#if]>${software.name}</option>
@@ -26,7 +26,7 @@
      [@b.textarea label="实验"+(test_index+1)+"的内容" name="test_idx_"+(test_index+1)  cols="80" rows="4" value=test.content/]
      [/#if]
    [/#list]
-   
+   [@b.validity]jQuery("#software_select").assert(function(){ if(jQuery("#software_select").val())return true;else return false;}, "请填写软件");[/@]
    [@b.formfoot id="footer"]
      [#if program.persisted]
         <input type="hidden" name="program.id" value="${program.id}"/>

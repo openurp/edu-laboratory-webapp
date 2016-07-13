@@ -12,26 +12,26 @@ import org.beangle.commons.collection.CollectUtils;
 import org.beangle.commons.entity.pojo.LongIdObject;
 import org.beangle.commons.lang.time.WeekTime;
 
-@Entity(name="org.openurp.edu.laboratory.model.ExprActivity")
-public class ExprActivity extends LongIdObject {
+@Entity(name = "org.openurp.edu.laboratory.model.LabActivity")
+public class LabActivity extends LongIdObject {
 
   private static final long serialVersionUID = 7827023268571081446L;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private ExprProgram program;
-  
+  private LabRoomApply apply;
+
   @Embedded
   private WeekTime time;
-  
+
   @ManyToMany
   private List<LabRoom> rooms = CollectUtils.newArrayList();
 
-  public ExprProgram getProgram() {
-    return program;
+  public LabRoomApply getApply() {
+    return apply;
   }
 
-  public void setProgram(ExprProgram program) {
-    this.program = program;
+  public void setApply(LabRoomApply apply) {
+    this.apply = apply;
   }
 
   public WeekTime getTime() {
@@ -49,6 +49,5 @@ public class ExprActivity extends LongIdObject {
   public void setRooms(List<LabRoom> rooms) {
     this.rooms = rooms;
   }
-  
-  
+
 }

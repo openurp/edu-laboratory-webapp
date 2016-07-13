@@ -68,6 +68,7 @@ public class ProgramAction extends AbstractTeacherLessonAction {
 
     OqlBuilder<Software> sbuilder = OqlBuilder.from(Software.class, "s");
     sbuilder.where("s.project=:project", program.getProject());
+    sbuilder.orderBy("s.name");
     put("softwares", entityDao.search(sbuilder));
     return forward();
   }

@@ -15,6 +15,7 @@
    [@b.field label="时间"+(time_index+1)]
      [#assign units = timeSetting.getUnitSpan(time.beginAt,time.endAt)]
      ${time.weekday.name} ${units._1}-${units._2}  [#assign weekList =time.weekstate.weekList]
+     周次:
      [#list weekList as week]
         [#assign name="weekId_"+time.weekday.id+"_"+time.beginAt+"_"+time.endAt]
         [#if existedDates?seq_contains(time.getDate(week))]
@@ -22,22 +23,23 @@
         [#else][#assign checked = false]
         [/#if ]
 		<input id="${name}" name="${name}" class="weekCheck${time_index} weekCheck ui-helper-hidden-accessible" type="checkbox" value="${week}" [#if checked]checked[/#if]>
-		<label style="cursor:pointer;background:white;color:${checked?string('black','white')}" class="ui-widget ui-state-active ui-button-text-only [#if week_index==0]ui-corner-left[#elseif !week_has_next]ui-corner-right[/#if]" role="button" title="${time.getDate(week)?string("yyyy-MM-dd")}"> 
+		<label style="cursor:pointer;background:white;${checked?string('font-weight:bold;color:blue;','color:gray')}" class="ui-widget ui-state-active ui-button-text-only [#if week_index==0]ui-corner-left[#elseif !week_has_next]ui-corner-right[/#if]" role="button" title="${time.getDate(week)?string("yyyy-MM-dd")}"> 
 		 <span class="ui-button-text">${week}</span>
 		</label>
 	 [/#list]
 	 &nbsp;
 	 <select id="cycle_${time_index}"><option value="0">连续周</option><option value="1">单周</option><option value="2">双周</option></select><input type="button" id="selectReverse_${time_index}" value="反选"/>
+   <h style="color:red">&nbsp;注：蓝色为已选周次</h>
    [/@]
    [/#list]
-   
-   [@b.field label='使用软件']
+   [@b.field label='使用软件' required="true"]
 	 <select id="software_select" multiple="true" name="software.id" style="width:600px;">
 	 [#list softwares as software]
 	   <option value='${software.id}' [#if apply.softwares?seq_contains(software)]selected[/#if]>${software.name}</option>
 	 [/#list]
      </select>
     [/@]
+    [@b.validity]jQuery("#software_select").assert(function(){ if(jQuery("#software_select").val())return true;else return false;}, "请填写软件");[/@]
    [@b.formfoot id="footer"]
      [#if apply.persisted]
         <input type="hidden" name="apply.id" value="${apply.id}"/>
@@ -51,23 +53,23 @@
 function changeWeek(cycle,timeIndex){
 	switch(parseInt(cycle)){
    		case 0:
-   			jQuery(".weekCheck"+timeIndex).prop("checked",true).next("label").css("color","black");
+   			jQuery(".weekCheck"+timeIndex).prop("checked",true).next("label").css("color","blue").css("font-weight","bold");
      		break;
 	   	case 1:
 	   		jQuery(".weekCheck"+timeIndex).each(function(i){
 	   			if(this.value%2==1){
-	   				jQuery(this).prop("checked",true).next("label").css("color","black");
+	   				jQuery(this).prop("checked",true).next("label").css("color","blue").css("font-weight","bold");
 	   			}else{
-	   				jQuery(this).prop("checked",false).next("label").css("color","white");
+	   				jQuery(this).prop("checked",false).next("label").css("color","gray").css("font-weight","normal");;
 	   			}
 	   		})
 			break;
 	   	case 2:
 	   		jQuery(".weekCheck"+timeIndex).each(function(i){
 	   			if(this.value%2==0){
-	   				jQuery(this).prop("checked",true).next("label").css("color","black");
+	   				jQuery(this).prop("checked",true).next("label").css("color","blue").css("font-weight","bold");
 	   			}else{
-	   				jQuery(this).prop("checked",false).next("label").css("color","white");
+	   				jQuery(this).prop("checked",false).next("label").css("color","gray").css("font-weight","normal");
 	   			}
 	   		})
 	   		break;
@@ -76,9 +78,9 @@ function changeWeek(cycle,timeIndex){
 function reverseCheckWeek(timeIndex){
 	jQuery(".weekCheck"+timeIndex).each(function(i){
 		if(jQuery(this).prop("checked")){
-			jQuery(this).prop("checked",false).next("label").css("color","white");
+			jQuery(this).prop("checked",false).next("label").css("color","gray").css("font-weight","normal");
 		}else{
-			jQuery(this).prop("checked",true).next("label").css("color","black");
+			jQuery(this).prop("checked",true).next("label").css("color","blue").css("font-weight","bold");
 		}
 	})
 }
@@ -86,9 +88,9 @@ function reverseCheckWeek(timeIndex){
 jQuery(document).ready(function(){
     jQuery("label[role='button']").click(function(){
 		if(jQuery(this).prev(":checkbox").prop("checked")){
-			jQuery(this).css("color","white").prev(".weekCheck").prop('checked',false);
+			jQuery(this).css("color","gray").css("font-weight","normal").prev(".weekCheck").prop('checked',false);
 		}else{
-			jQuery(this).css("color","black").prev(".weekCheck").prop("checked",true);
+			jQuery(this).css("color","blue").css("font-weight","bold").prev(".weekCheck").prop("checked",true);
 		}
 	});
 	[#list times as time]

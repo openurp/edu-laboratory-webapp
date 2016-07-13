@@ -36,6 +36,7 @@ public class LabRoom extends IntegerIdObject {
   private LabRoomType roomType;
 
   private int capacity;
+  
   private Float area;
 
   @ManyToOne(fetch = FetchType.LAZY)

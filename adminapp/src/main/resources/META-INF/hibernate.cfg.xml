@@ -3,15 +3,16 @@
 "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <mapping class="org.openurp.edu.laboratory.model.ExprActivity"/>
     <mapping class="org.openurp.edu.laboratory.model.ExprProgram"/>
     <mapping class="org.openurp.edu.laboratory.model.ExprTest"/>
     <mapping class="org.openurp.edu.laboratory.model.Lab"/>
     <mapping class="org.openurp.edu.laboratory.model.LabCenter"/>
     <mapping class="org.openurp.edu.laboratory.model.LabRoom"/>
     <mapping class="org.openurp.edu.laboratory.model.LabRoomApply"/>
+    <mapping class="org.openurp.edu.laboratory.model.LabActivity"/>
     <mapping class="org.openurp.edu.laboratory.model.Os"/>
     <mapping class="org.openurp.edu.laboratory.model.Software"/>
     <mapping class="org.openurp.edu.laboratory.model.code.LabRoomType"/>
+    <mapping class="org.openurp.edu.laboratory.model.MediaApply"/>
   </session-factory>
 </hibernate-configuration>

@@ -9,12 +9,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.beangle.commons.collection.CollectUtils;
 import org.beangle.commons.entity.pojo.LongIdObject;
 import org.beangle.commons.lang.time.WeekTime;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.openurp.base.model.Semester;
 import org.openurp.base.model.User;
 import org.openurp.edu.base.model.AuditState;
@@ -57,6 +60,10 @@ public class LabRoomApply extends LongIdObject {
 
   @NotNull
   private java.util.Date updatedAt;
+
+  @OneToMany(mappedBy = "apply", orphanRemoval = true)
+  @Cascade(CascadeType.ALL)
+  private List<LabActivity> activities = CollectUtils.newArrayList();
 
   @NotNull
   @Enumerated(value = EnumType.ORDINAL)

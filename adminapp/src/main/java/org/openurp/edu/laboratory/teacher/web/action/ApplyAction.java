@@ -39,6 +39,8 @@ public class ApplyAction extends AbstractTeacherLessonAction {
   }
 
   private Set<CourseActivity> getApplyableActivities(Lesson lesson) {
+    if(true)return lesson.getCourseSchedule().getActivities();
+    
     Set<CourseActivity> activities = lesson.getCourseSchedule().getActivities();
     Set<CourseActivity> applyableActivities = CollectUtils.newHashSet();
     for (CourseActivity ca : activities) {
@@ -107,7 +109,15 @@ public class ApplyAction extends AbstractTeacherLessonAction {
             ":day :units :weeks :room"));
     if(apply.isTransient()){
       for(CourseActivity ca:applyableActivities){
-        apply.getTimes().add(ca.getTime());
+        if (ca.getRooms().isEmpty()) {
+          apply.getTimes().add(ca.getTime());
+        } else {
+          for (Classroom cl : ca.getRooms()) {
+            if (cl.getRoom() == null) {
+              apply.getTimes().add(ca.getTime());
+            }
+          }
+        }
       }
     }
 
@@ -121,6 +131,7 @@ public class ApplyAction extends AbstractTeacherLessonAction {
     
     OqlBuilder<Software> sbuilder = OqlBuilder.from(Software.class, "s");
     sbuilder.where("s.project=:project", lesson.getProject());
+    sbuilder.orderBy("s.name");
     put("softwares", entityDao.search(sbuilder));
 
     put("apply", apply);
