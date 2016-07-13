@@ -59,17 +59,17 @@ public class ApplyAction extends AbstractTeacherLessonAction {
 
   private List<WeekTime> toRelativeTimes(Lesson lesson, Collection<CourseActivity> activities) {
     Semester semester = lesson.getSemester();
-    int weekOffset = WeekTimeBuilder.getOffset(semester);
-    int reverseOffset = WeekTimeBuilder.getReverseOffset(semester);
     List<WeekTime> times = CollectUtils.newArrayList();
     for (CourseActivity ca : activities) {
       WeekTime time = (WeekTime) ca.getTime().clone();
+      int weekOffset = WeekTimeBuilder.getOffset(semester,time.getWeekday());
+      int reverseOffset = WeekTimeBuilder.getReverseOffset(semester,time.getWeekday());
+      time.setStartOn(WeekTimeBuilder.getStartOn(semester, time.getWeekday()));
       if (time.getStartOn().getYear() == semester.getBeginOn().getYear()) {
         time.setWeekstate(new WeekState(time.getWeekstate().value >> weekOffset));
       } else {
         time.setWeekstate(new WeekState(time.getWeekstate().value << reverseOffset));
       }
-      time.setStartOn(WeekTimeBuilder.getStartOn(semester, time.getWeekday()));
       times.add(time);
     }
     times = WeekTimes.mergeTimes(times);
