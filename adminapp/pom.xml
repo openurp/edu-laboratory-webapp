@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.openurp.edu.laboratory</groupId>
+    <artifactId>openurp-edu-laboratory-webapp</artifactId>
+    <version>0.0.1</version>
+  </parent>
+  <groupId>org.openurp.edu.laboratory</groupId>
+  <artifactId>openurp-edu-laboratory-adminapp</artifactId>
+  <version>0.0.1</version>
+  <packaging>war</packaging>
+  <name>Openurp Edu Laboratory AdminApp</name>
+
+  <properties>
+    <bundle.symbolicName>org.openurp.edu.laboratory.adminapp</bundle.symbolicName>
+    <bundle.namespace>org.openurp.edu.laboratory</bundle.namespace>
+    <lesson.core.version>0.0.1-SNAPSHOT</lesson.core.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
