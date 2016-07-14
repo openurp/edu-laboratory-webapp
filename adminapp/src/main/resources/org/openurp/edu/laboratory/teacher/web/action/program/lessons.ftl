@@ -27,7 +27,7 @@
        [#if lesson.courseSchedule.period>0]
       [#if programMap.get(lesson)??]
         [#if applyMap.get(lesson)??]
-          [@b.a href="apply!applyByLesson?apply.id="+applyMap.get(lesson).id]修改[/@]
+          [@b.a href="apply!applyByLesson?apply.id="+applyMap.get(lesson).id title=timeMap.get(applyMap.get(lesson))]修改[/@]
     [#--      [@b.a href="apply!applyByLesson?lesson.id="+lesson.id]新增[/@]--]
         [#else]
           [#if lesson.courseSchedule.activities?size>0]

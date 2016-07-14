@@ -7,6 +7,7 @@ import org.beangle.commons.collection.CollectUtils;
 import org.beangle.commons.dao.query.builder.OqlBuilder;
 import org.beangle.commons.lang.Strings;
 import org.openurp.base.model.Semester;
+import org.openurp.base.model.TimeSetting;
 import org.openurp.edu.base.model.Teacher;
 import org.openurp.edu.eams.web.AbstractTeacherLessonAction;
 import org.openurp.edu.laboratory.model.ExprProgram;
@@ -14,6 +15,7 @@ import org.openurp.edu.laboratory.model.ExprTest;
 import org.openurp.edu.laboratory.model.LabRoomApply;
 import org.openurp.edu.laboratory.model.Software;
 import org.openurp.edu.lesson.model.Lesson;
+import org.openurp.edu.lesson.util.WeekTimeDigestor;
 
 public class ProgramAction extends AbstractTeacherLessonAction {
 
@@ -88,7 +90,7 @@ public class ProgramAction extends AbstractTeacherLessonAction {
     program.getTests().removeAll(removed);
 
     for (int i = 0; i < count; i++) {
-      String testContent = get("test_idx_" + (i+1));
+      String testContent = get("test_idx_" + (i + 1));
       if (Strings.isNotBlank(testContent)) {
         ExprTest newone = new ExprTest();
         newone.setContent(testContent);
@@ -97,7 +99,7 @@ public class ProgramAction extends AbstractTeacherLessonAction {
       }
     }
     program.setItemCount(program.getTests().size());
-    
+
     String[] softwareIds = getAll("software.id", String.class);
     program.getSoftwares().clear();
     if (softwareIds != null && softwareIds.length > 0) {
@@ -111,6 +113,7 @@ public class ProgramAction extends AbstractTeacherLessonAction {
   public String lessons() {
     Teacher teacher = getLoginTeacher();
     Semester semester = getSemester();
+    TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(teacher.getProject(), semester, null);
     OqlBuilder<Lesson> builder = OqlBuilder.from(Lesson.class, "l");
     builder.where(":teacher in elements(l.teachers)", teacher);
     builder.where("l.project =:project and l.semester = :semester", teacher.getProject(), semester);
@@ -118,6 +121,7 @@ public class ProgramAction extends AbstractTeacherLessonAction {
 
     Map<Lesson, ExprProgram> programMap = CollectUtils.newHashMap();
     Map<Lesson, LabRoomApply> applyMap = CollectUtils.newHashMap();
+    Map<LabRoomApply, String> times = CollectUtils.newHashMap();
     if (!lessonList.isEmpty()) {
       OqlBuilder<ExprProgram> pbuilder = OqlBuilder.from(ExprProgram.class, "ep");
       pbuilder.where("ep.lesson in(:lessons)", lessonList);
@@ -125,17 +129,20 @@ public class ProgramAction extends AbstractTeacherLessonAction {
       for (ExprProgram p : programs) {
         programMap.put(p.getLesson(), p);
       }
-      
+
       OqlBuilder<LabRoomApply> abuilder = OqlBuilder.from(LabRoomApply.class, "a");
       abuilder.where("a.lesson in(:lessons)", lessonList);
       List<LabRoomApply> applies = entityDao.search(abuilder);
       for (LabRoomApply p : applies) {
         applyMap.put(p.getLesson(), p);
+        times.put(p,
+            WeekTimeDigestor.getInstance().digest(getTextResource(), semester, timeSetting, p.getTimes()));
       }
     }
     put("lessonList", lessonList);
     put("programMap", programMap);
     put("applyMap", applyMap);
+    put("timeMap", times);
     return forward();
   }
 }
