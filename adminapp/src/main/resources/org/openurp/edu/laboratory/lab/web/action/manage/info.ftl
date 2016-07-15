@@ -9,8 +9,8 @@
     <td class="content"> ${apply.lesson.no} ${apply.lesson.course.name} ${applyableActivityText}</td>
   </tr>
   <tr>
-    <td class="title" width="20%">时间</td>
-    <td class="content">XXXXXXXXXXXXX</td>
+    <td class="title" width="20%">申请上机时间</td>
+    <td class="content">${time}</td>
   </tr>
   <tr>
     <td class="title" width="20%">使用软件</td>
@@ -22,9 +22,12 @@
    </td>
   </tr>
   <tr>
+    <td class="title" width="20%">教师</td>
+    <td class="content">${apply.borrower.name!}</td>
+  </tr>
+  <tr>
     <td class="title" width="20%">联系电话</td>
     <td class="content">${apply.tel!}</td>
   </tr>
 </table>
-
 [@b.foot/]
