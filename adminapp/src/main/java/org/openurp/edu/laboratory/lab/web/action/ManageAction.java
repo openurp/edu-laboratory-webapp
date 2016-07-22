@@ -7,6 +7,9 @@ import java.util.Set;
 import org.beangle.commons.collection.CollectUtils;
 import org.beangle.commons.collection.Order;
 import org.beangle.commons.dao.query.builder.OqlBuilder;
+import org.beangle.commons.entity.Entity;
+import org.beangle.commons.transfer.exporter.PropertyExtractor;
+import org.beangle.struts2.util.OgnlPropertyExtractor;
 import org.openurp.base.model.Semester;
 import org.openurp.base.model.TimeSetting;
 import org.openurp.edu.base.model.Classroom;
@@ -20,27 +23,41 @@ import org.openurp.edu.web.action.SemesterSupportAction;
 public class ManageAction extends SemesterSupportAction {
 
   public String list() {
-    
     Semester semester = getSemester();
     TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(getProject(), semester, null);
     OqlBuilder<LabRoomApply> builder = OqlBuilder.from(LabRoomApply.class, "apply");
     builder.where("apply.project =:project and apply.semester = :semester", getProject(), semester);
     builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit());
     List<LabRoomApply> applyList = entityDao.search(builder);
-    
+
     Map<LabRoomApply, String> times = CollectUtils.newHashMap();
     for (LabRoomApply p : applyList) {
       times.put(p,
           WeekTimeDigestor.getInstance().digest(getTextResource(), semester, timeSetting, p.getTimes()));
     }
-    put("applyList",applyList);
+    put("applyList", applyList);
     put("times", times);
     return forward();
   }
-  
+
+  @Override
+  protected OqlBuilder<LabRoomApply> getQueryBuilder() {
+    Semester semester = getSemester();
+    OqlBuilder<LabRoomApply> builder = OqlBuilder.from(LabRoomApply.class, "apply");
+    builder.where("apply.project =:project and apply.semester = :semester", getProject(), semester);
+    builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit());
+    return builder;
+  }
+
+  protected PropertyExtractor getPropertyExtractor() {
+    Semester semester = getSemester();
+    TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(getProject(), semester, null);
+    return new ApplyPropertyExtractor(this.getTextResource(), semester, timeSetting);
+  }
+
   private Set<CourseActivity> getApplyableActivities(Lesson lesson) {
-    if(true)return lesson.getCourseSchedule().getActivities();
-    
+    if (true) return lesson.getCourseSchedule().getActivities();
+
     Set<CourseActivity> activities = lesson.getCourseSchedule().getActivities();
     Set<CourseActivity> applyableActivities = CollectUtils.newHashSet();
     for (CourseActivity ca : activities) {
@@ -56,22 +73,21 @@ public class ManageAction extends SemesterSupportAction {
     }
     return applyableActivities;
   }
-  
- public String info() {
-   Long applyId=getLong("apply.id");
-   LabRoomApply apply = entityDao.get(LabRoomApply.class, applyId);
-   put("apply", apply);
-   Lesson lesson=apply.getLesson();
-   TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject(),
-       lesson.getSemester(), lesson.getCampus());
-   Set<CourseActivity> applyableActivities = getApplyableActivities(lesson);
-   put("applyableActivityText",
-       CourseActivityDigestor.getInstance().digest(null, timeSetting, applyableActivities,
-           ":day :units :weeks :room"));
-   String time=WeekTimeDigestor.getInstance().digest(getTextResource(), lesson.getSemester(), timeSetting, apply.getTimes());
-   put("time", time);
-   return forward();
- }
-  
-  
+
+  public String info() {
+    Long applyId = getLong("apply.id");
+    LabRoomApply apply = entityDao.get(LabRoomApply.class, applyId);
+    put("apply", apply);
+    Lesson lesson = apply.getLesson();
+    TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject(),
+        lesson.getSemester(), lesson.getCampus());
+    Set<CourseActivity> applyableActivities = getApplyableActivities(lesson);
+    put("applyableActivityText", CourseActivityDigestor.getInstance().digest(null, timeSetting,
+        applyableActivities, ":day :units :weeks :room"));
+    String time = WeekTimeDigestor.getInstance().digest(getTextResource(), lesson.getSemester(), timeSetting,
+        apply.getTimes());
+    put("time", time);
+    return forward();
+  }
+
 }
