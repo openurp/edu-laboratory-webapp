@@ -21,6 +21,7 @@ package org.openurp.edu.laboratory.teacher.web;
 import org.beangle.commons.inject.bind.AbstractBindModule;
 import org.openurp.edu.laboratory.lab.web.action.ArrangeAction;
 import org.openurp.edu.laboratory.lab.web.action.ManageAction;
+import org.openurp.edu.laboratory.lab.web.action.MediaManageAction;
 import org.openurp.edu.laboratory.teacher.web.action.ApplyAction;
 import org.openurp.edu.laboratory.teacher.web.action.MediaApplyAction;
 import org.openurp.edu.laboratory.teacher.web.action.ProgramAction;
@@ -34,6 +35,7 @@ public class DefaultModule extends AbstractBindModule {
     bind(ManageAction.class);
     bind(MediaApplyAction.class);
     bind(ArrangeAction.class);
+    bind(MediaManageAction.class);
   }
 
 }

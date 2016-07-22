@@ -1,7 +1,7 @@
 [#ftl]
 [@b.grid items=applyList var="apply" sortable="true"]
 [@b.gridbar]
-  bar.addItem("导出",action.exportData("lesson.no:课程序号,lesson.course.name:课程名称,lesson.course.code:课程代码,lesson.courseType.name:课程类别,lesson.campus.name:校区,lesson.course.credits:学分,lesson.teachDepart.name:开课院系,semester.code:学年学期,lesson.teachClass.name:教学班名称,lesson.teachClass.depart.name:上课院系,lesson.teachClass.grade:入学年份,lesson.langType.name:授课语言,borrower.name:申请教师,attendance:上课人数,tel:联系电话,softwares:所需软件,applyTime:申请时间"))
+  bar.addItem("导出",action.exportData("lesson.no:课程序号,lesson.course.name:课程名称,lesson.course.code:课程代码,lesson.courseType.name:课程类别,lesson.campus.name:校区,lesson.course.credits:学分,lesson.teachDepart.name:开课院系,semester.code:学年学期,lesson.teachClass.name:教学班名称,lesson.teachClass.depart.name:上课院系,lesson.teachClass.grade:入学年份,lesson.langType.name:授课语言,borrower.name:申请教师,attendance:上课人数,tel:联系电话,softwares:所需软件,applyTime:申请时间,period:实验课时,itemCount:实验项目数"))
   [/@]
 	[@b.row]
 		[@b.col width="4%" title="序号"]${apply_index+1}[/@]
