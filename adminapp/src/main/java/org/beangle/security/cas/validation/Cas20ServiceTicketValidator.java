@@ -41,7 +41,7 @@ public class Cas20ServiceTicketValidator extends AbstractTicketValidator {
     final String error = getTextForElement(response, "authenticationFailure");
     if (Strings.isNotBlank(error)) { throw new TicketValidationException(error); }
     final String principal = getTextForElement(response, "user");
-//     principal="0748";
+    // principal = "0646";
     if (Strings.isEmpty(principal)) { throw new TicketValidationException(
         "No principal was found in the response from the CAS server."); }
 

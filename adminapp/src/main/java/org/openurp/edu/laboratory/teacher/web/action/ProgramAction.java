@@ -9,15 +9,15 @@ import org.beangle.commons.lang.Strings;
 import org.openurp.base.model.Semester;
 import org.openurp.base.model.TimeSetting;
 import org.openurp.edu.base.model.Teacher;
-import org.openurp.edu.eams.web.AbstractTeacherLessonAction;
 import org.openurp.edu.laboratory.model.ExprProgram;
 import org.openurp.edu.laboratory.model.ExprTest;
 import org.openurp.edu.laboratory.model.LabRoomApply;
 import org.openurp.edu.laboratory.model.Software;
 import org.openurp.edu.lesson.model.Lesson;
 import org.openurp.edu.lesson.util.WeekTimeDigestor;
+import org.openurp.edu.web.action.TeacherProjectSupport;
 
-public class ProgramAction extends AbstractTeacherLessonAction {
+public class ProgramAction extends TeacherProjectSupport {
 
   @Override
   public String innerIndex() {

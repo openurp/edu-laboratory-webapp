@@ -11,13 +11,13 @@ import org.openurp.base.model.TimeSetting;
 import org.openurp.edu.base.model.AuditState;
 import org.openurp.edu.base.model.Classroom;
 import org.openurp.edu.base.model.Teacher;
-import org.openurp.edu.eams.web.AbstractTeacherLessonAction;
 import org.openurp.edu.laboratory.model.MediaApply;
 import org.openurp.edu.lesson.model.CourseActivity;
 import org.openurp.edu.lesson.model.Lesson;
 import org.openurp.edu.lesson.util.CourseActivityDigestor;
+import org.openurp.edu.web.action.TeacherProjectSupport;
 
-public class MediaApplyAction  extends AbstractTeacherLessonAction {
+public class MediaApplyAction extends TeacherProjectSupport {
 
   @Override
   public String innerIndex() {
@@ -42,6 +42,7 @@ public class MediaApplyAction  extends AbstractTeacherLessonAction {
     populate(apply, "mediaApply");
     return apply;
   }
+
   private String getTelphone(Teacher teacher, Semester semester) {
     OqlBuilder<String> builder = OqlBuilder.from(MediaApply.class.getName(), "apply");
     builder.where("apply.project = :project", teacher.getProject());
@@ -53,6 +54,7 @@ public class MediaApplyAction  extends AbstractTeacherLessonAction {
     else return tels.get(0);
 
   }
+
   public String edit() {
     Teacher teacher = getLoginTeacher();
     MediaApply apply = getMediaApply();
@@ -67,18 +69,17 @@ public class MediaApplyAction  extends AbstractTeacherLessonAction {
       lesson = entityDao.get(Lesson.class, lessonId);
       apply = new MediaApply();
       apply.setLesson(lesson);
-      apply.setTel(getTelphone(teacher,lesson.getSemester()));
+      apply.setTel(getTelphone(teacher, lesson.getSemester()));
     }
     if (!lesson.getTeachers().contains(teacher)) { return forwardError("不是你的课程"); }
     TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject(),
         lesson.getSemester(), lesson.getCampus());
     Set<CourseActivity> applyableActivities = getApplyableActivities(lesson);
-    put("applyableActivityText",
-        CourseActivityDigestor.getInstance().digest(null, timeSetting, applyableActivities,
-            ":day :units :weeks :room"));
+    put("applyableActivityText", CourseActivityDigestor.getInstance().digest(null, timeSetting,
+        applyableActivities, ":day :units :weeks :room"));
     return forward();
   }
-  
+
   private Set<CourseActivity> getApplyableActivities(Lesson lesson) {
     Set<CourseActivity> activities = lesson.getCourseSchedule().getActivities();
     Set<CourseActivity> applyableActivities = CollectUtils.newHashSet();
@@ -106,7 +107,6 @@ public class MediaApplyAction  extends AbstractTeacherLessonAction {
     return redirect("lessons", "info.save.success");
   }
 
-  
   public String lessons() {
     Teacher teacher = getLoginTeacher();
     Semester semester = getSemester();
@@ -117,7 +117,7 @@ public class MediaApplyAction  extends AbstractTeacherLessonAction {
 
     Map<Lesson, MediaApply> applyMap = CollectUtils.newHashMap();
     if (!lessonList.isEmpty()) {
-      
+
       OqlBuilder<MediaApply> abuilder = OqlBuilder.from(MediaApply.class, "a");
       abuilder.where("a.lesson in(:lessons)", lessonList);
       List<MediaApply> applies = entityDao.search(abuilder);

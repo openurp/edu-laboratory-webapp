@@ -18,15 +18,15 @@ import org.openurp.base.util.WeekTimeBuilder;
 import org.openurp.edu.base.model.AuditState;
 import org.openurp.edu.base.model.Classroom;
 import org.openurp.edu.base.model.Teacher;
-import org.openurp.edu.eams.web.AbstractTeacherLessonAction;
 import org.openurp.edu.laboratory.model.ExprProgram;
 import org.openurp.edu.laboratory.model.LabRoomApply;
 import org.openurp.edu.laboratory.model.Software;
 import org.openurp.edu.lesson.model.CourseActivity;
 import org.openurp.edu.lesson.model.Lesson;
 import org.openurp.edu.lesson.util.CourseActivityDigestor;
+import org.openurp.edu.web.action.TeacherProjectSupport;
 
-public class ApplyAction extends AbstractTeacherLessonAction {
+public class ApplyAction extends TeacherProjectSupport {
 
   @Override
   public String innerIndex() {
@@ -39,8 +39,8 @@ public class ApplyAction extends AbstractTeacherLessonAction {
   }
 
   private Set<CourseActivity> getApplyableActivities(Lesson lesson) {
-    if(true)return lesson.getCourseSchedule().getActivities();
-    
+    if (true) return lesson.getCourseSchedule().getActivities();
+
     Set<CourseActivity> activities = lesson.getCourseSchedule().getActivities();
     Set<CourseActivity> applyableActivities = CollectUtils.newHashSet();
     for (CourseActivity ca : activities) {
@@ -62,8 +62,8 @@ public class ApplyAction extends AbstractTeacherLessonAction {
     List<WeekTime> times = CollectUtils.newArrayList();
     for (CourseActivity ca : activities) {
       WeekTime time = (WeekTime) ca.getTime().clone();
-      int weekOffset = WeekTimeBuilder.getOffset(semester,time.getWeekday());
-      int reverseOffset = WeekTimeBuilder.getReverseOffset(semester,time.getWeekday());
+      int weekOffset = WeekTimeBuilder.getOffset(semester, time.getWeekday());
+      int reverseOffset = WeekTimeBuilder.getReverseOffset(semester, time.getWeekday());
       time.setStartOn(WeekTimeBuilder.getStartOn(semester, time.getWeekday()));
       if (time.getStartOn().getYear() == semester.getBeginOn().getYear()) {
         time.setWeekstate(new WeekState(time.getWeekstate().value >> weekOffset));
@@ -94,8 +94,8 @@ public class ApplyAction extends AbstractTeacherLessonAction {
       pbuilder.where("p.lesson=:lesson", lesson);
       List<ExprProgram> programs = entityDao.search(pbuilder);
       apply.getSoftwares().addAll(programs.get(0).getSoftwares());
-      apply.setTel(getTelphone(teacher,lesson.getSemester()));
-      
+      apply.setTel(getTelphone(teacher, lesson.getSemester()));
+
     }
     if (!lesson.getTeachers().contains(teacher)) { return forwardError("不是你的课程"); }
 
@@ -104,11 +104,10 @@ public class ApplyAction extends AbstractTeacherLessonAction {
     put("timeSetting", timeSetting);
 
     Set<CourseActivity> applyableActivities = getApplyableActivities(lesson);
-    put("applyableActivityText",
-        CourseActivityDigestor.getInstance().digest(null, timeSetting, applyableActivities,
-            ":day :units :weeks :room"));
-    if(apply.isTransient()){
-      for(CourseActivity ca:applyableActivities){
+    put("applyableActivityText", CourseActivityDigestor.getInstance().digest(null, timeSetting,
+        applyableActivities, ":day :units :weeks :room"));
+    if (apply.isTransient()) {
+      for (CourseActivity ca : applyableActivities) {
         if (ca.getRooms().isEmpty()) {
           apply.getTimes().add(ca.getTime());
         } else {
@@ -121,16 +120,16 @@ public class ApplyAction extends AbstractTeacherLessonAction {
       }
     }
 
-    Set<java.util.Date> existedDates= CollectUtils.newHashSet();
-    for(WeekTime s :apply.getTimes()){
+    Set<java.util.Date> existedDates = CollectUtils.newHashSet();
+    for (WeekTime s : apply.getTimes()) {
       existedDates.addAll(s.getDates());
     }
-    put("existedDates",existedDates);
+    put("existedDates", existedDates);
     List<WeekTime> times = toRelativeTimes(lesson, applyableActivities);
     put("times", times);
-    
+
     OqlBuilder<Software> sbuilder = OqlBuilder.from(Software.class, "s");
-    sbuilder.where("s.project=:project", lesson.getProject());
+    // sbuilder.where("s.project=:project", lesson.getProject());
     sbuilder.orderBy("s.name");
     put("softwares", entityDao.search(sbuilder));
 
@@ -156,7 +155,7 @@ public class ApplyAction extends AbstractTeacherLessonAction {
     apply.setProject(lesson.getProject());
     apply.setSemester(lesson.getSemester());
     apply.setBorrower(teacher.getUser());
-    apply.setActivity(lesson.getNo()+" "+ lesson.getCourse().getName());
+    apply.setActivity(lesson.getNo() + " " + lesson.getCourse().getName());
     apply.setAudience(lesson.getTeachClass().getName());
     apply.setAttendance(lesson.getTeachClass().getStdCount());
     apply.setState(AuditState.SUBMITTED);
@@ -178,7 +177,7 @@ public class ApplyAction extends AbstractTeacherLessonAction {
       for (WeekTime wt : selected) {
         WeekTimeBuilder builder = WeekTimeBuilder.on(lesson.getSemester());
         List<WeekTime> rs = builder.build(wt.getWeekday(), wt.getWeekstate().getWeekList());
-        for(WeekTime wtrs:rs){
+        for (WeekTime wtrs : rs) {
           wtrs.setBeginAt(wt.getBeginAt());
           wtrs.setEndAt(wt.getEndAt());
         }
@@ -190,7 +189,7 @@ public class ApplyAction extends AbstractTeacherLessonAction {
     if (softwareIds != null && softwareIds.length > 0) {
       apply.getSoftwares().addAll(entityDao.get(Software.class, Strings.transformToInt(softwareIds)));
     }
-    if(!apply.getTimes().isEmpty()){
+    if (!apply.getTimes().isEmpty()) {
       entityDao.saveOrUpdate(apply);
     }
     return redirect(new Action(ProgramAction.class, "lessons"), "info.save.success", null);
