@@ -1,6 +1,8 @@
 [#ftl]
 [@b.head/]
-[@b.toolbar title="实验室申请列表"/]
+[@b.toolbar title="实验室申请列表"]
+  bar.addItem("待申请课程列表", "labLessons()");
+[/@]
 [@eams.semesterBar semesterValue=semester formName="lessonForm" submit="searchTable()" name="project.id" semesterName="semester.id" semesterEmpty=false initCallback="searchTable()"]
 [/@]
 <table class="indexpanel">
@@ -19,5 +21,9 @@
        	form.action="${b.url('!index')}";
        	form.target="main";
    	}
+   	
+  function labLessons() {
+    bg.form.submit(document.lessonForm, 'manage!labLessons.action', '_blank');
+  }
 </script>
 [@b.foot/]

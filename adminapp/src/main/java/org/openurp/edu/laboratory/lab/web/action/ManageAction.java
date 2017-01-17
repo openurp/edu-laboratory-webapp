@@ -7,9 +7,7 @@ import java.util.Set;
 import org.beangle.commons.collection.CollectUtils;
 import org.beangle.commons.collection.Order;
 import org.beangle.commons.dao.query.builder.OqlBuilder;
-import org.beangle.commons.entity.Entity;
 import org.beangle.commons.transfer.exporter.PropertyExtractor;
-import org.beangle.struts2.util.OgnlPropertyExtractor;
 import org.openurp.base.model.Semester;
 import org.openurp.base.model.TimeSetting;
 import org.openurp.edu.base.model.Classroom;
@@ -40,6 +38,27 @@ public class ManageAction extends SemesterSupportAction {
     return forward();
   }
 
+  public String labLessons() {
+    OqlBuilder<Lesson> builder = OqlBuilder.from(Lesson.class, "l");
+    builder.where("l.project =:project and l.semester =:semester", getProject(), getSemester());
+    builder.where(
+        "exists (from l.courseSchedule.activities as activity join activity.rooms as room where room.name like:name)",
+        "%机房%");
+    builder.where("not exists ( from " + LabRoomApply.class.getName() + " apply where apply.lesson = l)");
+    builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit());
+    List<Lesson> lessons = entityDao.search(builder);
+    put("lessons", lessons);
+    CourseActivityDigestor digestor = CourseActivityDigestor.getInstance().setDelimeter("<br>");
+    Map<String, String> arrangeInfo = CollectUtils.newHashMap();
+    TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(getProject(), getSemester(), null);
+    for (Lesson oneTask : lessons) {
+      arrangeInfo.put(oneTask.getId().toString(),
+          digestor.digest(getTextResource(), timeSetting, oneTask, ":day :units :weeks :room"));
+    }
+    put("arrangeInfo", arrangeInfo);
+    return forward();
+  }
+
   @Override
   protected OqlBuilder<LabRoomApply> getQueryBuilder() {
     Semester semester = getSemester();
@@ -52,7 +71,7 @@ public class ManageAction extends SemesterSupportAction {
   protected PropertyExtractor getPropertyExtractor() {
     Semester semester = getSemester();
     TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(getProject(), semester, null);
-    return new ApplyPropertyExtractor(entityDao,this.getTextResource(), semester, timeSetting);
+    return new ApplyPropertyExtractor(entityDao, this.getTextResource(), semester, timeSetting);
   }
 
   private Set<CourseActivity> getApplyableActivities(Lesson lesson) {
