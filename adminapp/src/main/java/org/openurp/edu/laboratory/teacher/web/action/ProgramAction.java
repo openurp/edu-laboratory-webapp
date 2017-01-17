@@ -117,6 +117,8 @@ public class ProgramAction extends TeacherProjectSupport {
     OqlBuilder<Lesson> builder = OqlBuilder.from(Lesson.class, "l");
     builder.where(":teacher in elements(l.teachers)", teacher);
     builder.where("l.project =:project and l.semester = :semester", teacher.getProject(), semester);
+    builder.where("size(l.courseSchedule.activities) > 0");
+    // builder.where("exists (from l.courseSchedule.activities)");
     List<Lesson> lessonList = entityDao.search(builder);
 
     Map<Lesson, ExprProgram> programMap = CollectUtils.newHashMap();
