@@ -69,7 +69,7 @@ public class ProgramAction extends TeacherProjectSupport {
     put("sameCoursePrograms", sameCoursePrograms);
 
     OqlBuilder<Software> sbuilder = OqlBuilder.from(Software.class, "s");
-    sbuilder.where("s.project=:project", program.getProject());
+    // sbuilder.where("s.project=:project", program.getProject());
     sbuilder.orderBy("s.name");
     put("softwares", entityDao.search(sbuilder));
     return forward();
