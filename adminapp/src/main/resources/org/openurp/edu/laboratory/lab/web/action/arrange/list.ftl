@@ -18,9 +18,7 @@
 [/@]
 [/@]
 <script language="JavaScript">
-  var canSubmit = false;
     function adjust(){
-      canSubmit = false;
       var form= document.applyListForm;
         var applyId = bg.input.getCheckBoxValues("apply.id");
         if (applyId=="" || applyId==null ||applyId.indexOf(",")>-1) {
@@ -28,8 +26,6 @@
             return;
         }
         bg.form.addInput(form, "apply.id", applyId);
-        canSubmit = true;
-        bg.form.submit(form,"arrange!manualArrange.action");
-        form.action ="manualArrange!applyList.action";
+        bg.form.submit(form,"arrange!arrangeSetting.action");
     }
 </script>

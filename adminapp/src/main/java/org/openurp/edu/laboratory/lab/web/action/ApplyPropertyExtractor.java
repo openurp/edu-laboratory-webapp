@@ -18,6 +18,7 @@ import org.openurp.base.model.TimeSetting;
 import org.openurp.base.util.WeekTimeBuilder;
 import org.openurp.edu.laboratory.model.ExprProgram;
 import org.openurp.edu.laboratory.model.LabRoomApply;
+import org.openurp.edu.lesson.util.CourseActivityDigestor;
 import org.openurp.edu.lesson.util.WeekTimeDigestor;
 
 public class ApplyPropertyExtractor extends DefaultPropertyExtractor {
@@ -27,7 +28,9 @@ public class ApplyPropertyExtractor extends DefaultPropertyExtractor {
   private Map<WeekDay, Pair<Integer, Integer>> offsets = CollectUtils.newHashMap();
   private Semester semester;
   private EntityDao entityDao;
-  public ApplyPropertyExtractor(EntityDao entityDao,TextResource textResource, Semester semester, TimeSetting timeSetting) {
+
+  public ApplyPropertyExtractor(EntityDao entityDao, TextResource textResource, Semester semester,
+      TimeSetting timeSetting) {
     super(textResource);
     for (WeekDay day : WeekDay.All) {
       offsets.put(day,
@@ -35,7 +38,7 @@ public class ApplyPropertyExtractor extends DefaultPropertyExtractor {
     }
     this.semester = semester;
     this.timeSetting = timeSetting;
-    this.entityDao=entityDao;
+    this.entityDao = entityDao;
   }
 
   @Override
@@ -59,19 +62,26 @@ public class ApplyPropertyExtractor extends DefaultPropertyExtractor {
       return WeekTimeDigestor.getInstance().digest(null, apply.getSemester(), timeSetting, times);
     } else if (property.equals("softwares")) {
       return getPropertyIn(apply.getSoftwares(), "name");
+    } else if (property.equals("schedule")) {
+      if (null == apply.getLesson()) {
+        return "";
+      } else {
+        return CourseActivityDigestor.getInstance().digest(null, timeSetting,
+            apply.getLesson().getCourseSchedule().getActivities(), ":day :units :weeks :room");
+      }
     } else if (property.equals("period")) {
-      OqlBuilder  builder=OqlBuilder.from(ExprProgram.class,"program").where("program.lesson=:lesson",apply.getLesson());
-      List<ExprProgram> programs=entityDao.search(builder);
+      OqlBuilder builder = OqlBuilder.from(ExprProgram.class, "program").where("program.lesson=:lesson",
+          apply.getLesson());
+      List<ExprProgram> programs = entityDao.search(builder);
       return getPropertyIn(programs, "period");
-    }  else if (property.equals("itemCount")) {
-      OqlBuilder  builder=OqlBuilder.from(ExprProgram.class,"program").where("program.lesson=:lesson",apply.getLesson());
-      List<ExprProgram> programs=entityDao.search(builder);
+    } else if (property.equals("itemCount")) {
+      OqlBuilder builder = OqlBuilder.from(ExprProgram.class, "program").where("program.lesson=:lesson",
+          apply.getLesson());
+      List<ExprProgram> programs = entityDao.search(builder);
       return getPropertyIn(programs, "itemCount");
-    } 
-    else {
+    } else {
       return PropertyUtils.getProperty(target, property);
     }
 
   }
-
 }

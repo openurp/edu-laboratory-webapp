@@ -41,9 +41,10 @@ public class ManageAction extends SemesterSupportAction {
   public String labLessons() {
     OqlBuilder<Lesson> builder = OqlBuilder.from(Lesson.class, "l");
     builder.where("l.project =:project and l.semester =:semester", getProject(), getSemester());
-    builder.where(
-        "exists (from l.courseSchedule.activities as activity join activity.rooms as room where room.name like:name)",
-        "%机房%");
+    builder
+        .where(
+            "exists (from l.courseSchedule.activities as activity join activity.rooms as room where room.name like:name)",
+            "%机房%");
     builder.where("not exists ( from " + LabRoomApply.class.getName() + " apply where apply.lesson = l)");
     builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit());
     List<Lesson> lessons = entityDao.search(builder);
@@ -74,25 +75,6 @@ public class ManageAction extends SemesterSupportAction {
     return new ApplyPropertyExtractor(entityDao, this.getTextResource(), semester, timeSetting);
   }
 
-  private Set<CourseActivity> getApplyableActivities(Lesson lesson) {
-    if (true) return lesson.getCourseSchedule().getActivities();
-
-    Set<CourseActivity> activities = lesson.getCourseSchedule().getActivities();
-    Set<CourseActivity> applyableActivities = CollectUtils.newHashSet();
-    for (CourseActivity ca : activities) {
-      if (ca.getRooms().isEmpty()) {
-        applyableActivities.add(ca);
-      } else {
-        for (Classroom cl : ca.getRooms()) {
-          if (cl.getRoom() == null) {
-            applyableActivities.add(ca);
-          }
-        }
-      }
-    }
-    return applyableActivities;
-  }
-
   public String info() {
     Long applyId = getLong("apply.id");
     LabRoomApply apply = entityDao.get(LabRoomApply.class, applyId);
@@ -100,9 +82,10 @@ public class ManageAction extends SemesterSupportAction {
     Lesson lesson = apply.getLesson();
     TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject(),
         lesson.getSemester(), lesson.getCampus());
-    Set<CourseActivity> applyableActivities = getApplyableActivities(lesson);
-    put("applyableActivityText", CourseActivityDigestor.getInstance().digest(null, timeSetting,
-        applyableActivities, ":day :units :weeks :room"));
+    Set<CourseActivity> applyableActivities = lesson.getCourseSchedule().getActivities();
+    put("applyableActivityText",
+        CourseActivityDigestor.getInstance().digest(null, timeSetting, applyableActivities,
+            ":day :units :weeks :room"));
     String time = WeekTimeDigestor.getInstance().digest(getTextResource(), lesson.getSemester(), timeSetting,
         apply.getTimes());
     put("time", time);

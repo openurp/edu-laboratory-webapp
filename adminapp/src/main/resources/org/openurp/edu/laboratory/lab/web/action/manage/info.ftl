@@ -6,7 +6,11 @@
 <table class="infoTable">
   <tr>
     <td class="title" width="20%">课程</td>
-    <td class="content"> ${apply.lesson.no} ${apply.lesson.course.name} ${applyableActivityText}</td>
+    <td class="content"> ${apply.lesson.no} ${apply.lesson.course.name}</td>
+  </tr>
+  <tr>
+    <td class="title" width="20%">上课时间安排</td>
+    <td class="content">${applyableActivityText}</td>
   </tr>
   <tr>
     <td class="title" width="20%">申请上机时间</td>
