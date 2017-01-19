@@ -3,4 +3,5 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <bean id="edu.lab.teacher" class="org.openurp.edu.laboratory.teacher.web.DefaultModule" />
+    <bean id="edu.lab" class="org.openurp.edu.laboratory.LabModule" />
 </beans>
