@@ -18,6 +18,7 @@ import org.openurp.base.model.TimeSetting;
 import org.openurp.base.util.WeekTimeBuilder;
 import org.openurp.edu.laboratory.model.ExprProgram;
 import org.openurp.edu.laboratory.model.LabRoomApply;
+import org.openurp.edu.lesson.model.CourseActivity;
 import org.openurp.edu.lesson.util.CourseActivityDigestor;
 import org.openurp.edu.lesson.util.WeekTimeDigestor;
 
@@ -69,6 +70,21 @@ public class ApplyPropertyExtractor extends DefaultPropertyExtractor {
         return CourseActivityDigestor.getInstance().digest(null, timeSetting,
             apply.getLesson().getCourseSchedule().getActivities(), ":day :units :weeks :room");
       }
+    } else if (property.equals("accordingSchedule")) {
+      boolean finded = false;
+      for (WeekTime wt : apply.getTimes()) {
+        for (CourseActivity ca : apply.getLesson().getCourseSchedule().getActivities()) {
+          if (wt.getBeginAt().equals(ca.getTime().getBeginAt())
+              && wt.getEndAt().equals(ca.getTime().getEndAt())) {
+            if (wt.getWeekday().equals(wt.getWeekday())) {
+              finded = true;
+              break;
+            }
+          }
+        }
+        if (!finded) return "否";
+      }
+      return "是";
     } else if (property.equals("period")) {
       OqlBuilder builder = OqlBuilder.from(ExprProgram.class, "program").where("program.lesson=:lesson",
           apply.getLesson());

@@ -7,10 +7,10 @@ import java.util.Set;
 import org.beangle.commons.collection.CollectUtils;
 import org.beangle.commons.collection.Order;
 import org.beangle.commons.dao.query.builder.OqlBuilder;
+import org.beangle.commons.lang.time.WeekTime;
 import org.beangle.commons.transfer.exporter.PropertyExtractor;
 import org.openurp.base.model.Semester;
 import org.openurp.base.model.TimeSetting;
-import org.openurp.edu.base.model.Classroom;
 import org.openurp.edu.laboratory.model.LabRoomApply;
 import org.openurp.edu.lesson.model.CourseActivity;
 import org.openurp.edu.lesson.model.Lesson;
@@ -80,6 +80,13 @@ public class ManageAction extends SemesterSupportAction {
     LabRoomApply apply = entityDao.get(LabRoomApply.class, applyId);
     put("apply", apply);
     Lesson lesson = apply.getLesson();
+//    for(WeekTime wt:apply.getTimes()){
+//      for(CourseActivity ca:lesson.getCourseSchedule().getActivities()){
+//      wt.setBeginAt(ca.getTime().getBeginAt());
+//      wt.setEndAt(ca.getTime().getEndAt());
+//      }
+//    }
+//    entityDao.save(apply);
     TimeSetting timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject(),
         lesson.getSemester(), lesson.getCampus());
     Set<CourseActivity> applyableActivities = lesson.getCourseSchedule().getActivities();
